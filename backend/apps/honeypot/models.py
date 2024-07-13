@@ -346,20 +346,12 @@ class Honeypage(models.Model):
 
     @staticmethod
     def generate_unique_pdf_payload():
-        # get unique subdomain
+        # get unique subdomain and make sure the whole payload is unique
         while True:
-            subdomain_code = "pdf-{subdomain}-{subdomain_suffix}".format(
-                subdomain=codename(separator="-"),
-                subdomain_suffix=codename().split()[0]
-            )
-            if subdomain_code and Honeypage.objects.filter(pdf_payload__startswith=subdomain_code).count() == 0:
-                break
-
-        # make sure the whole payload is unique
-        while True:
-            pdf_payload = "{protocol}://{subdomain}.{domain}/".format(
+            pdf_payload = "{protocol}://pdf-{subdomain}-{subdomain_suffix}.{domain}/".format(
                 protocol=PROTOCOL,
-                subdomain=subdomain_code,
+                subdomain=codename(separator="-"),
+                subdomain_suffix=codename().split()[0],
                 domain=SERVER_ADDRESS
             )
 
